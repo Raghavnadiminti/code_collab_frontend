@@ -16,10 +16,10 @@ export default function Login(){
     const [wrong,setwrong]=useState(false)
    
 
-    function setusername(e){
-      console.log(e.target.value,"tytyt")
-        set_username(e.target.value)
-    }
+    // function setusername(e){
+    //   console.log(e.target.value,"tytyt")
+    //     set_username(e.target.value)
+    // }
  
     function set_Password(e){
         set_password(e.target.value)
@@ -32,7 +32,7 @@ export default function Login(){
      console.log("hi",username,password)
      let valid_state=true
      try{
-       if(username!=null && username!=undefined && username.length>=7){ 
+       if(username!=null && username!==undefined && username.length>=7){ 
          const usernameRegex = /^[a-zA-Z0-9_]+$/;
           valid_state=usernameRegex.test(username);    
        }
@@ -73,7 +73,7 @@ export default function Login(){
    
    }
      catch(e){
-         console.log("issue",e) 
+         console.log("issue",e,processing) 
  
          setProcessing(false) 
          setmessage(" issue with us ")
@@ -87,8 +87,8 @@ export default function Login(){
        
      try{
            if(validate()){
-            let m= await axios.post(`https://code-collab-backend-wvci.onrender.com/login?username=${username}&password=${password}`).then((res)=>{
-              console.log(res.data)
+             await axios.post(`https://code-collab-backend-wvci.onrender.com/login?username=${username}&password=${password}`).then((res)=>{
+             
               if(res.data){
               sessionStorage.setItem('username',username)
               navigate('/home')
@@ -104,7 +104,7 @@ export default function Login(){
          }
  
          catch(e){
-                      console.log("error",e)
+                      
          }
     }
  

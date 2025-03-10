@@ -1,4 +1,4 @@
-import { set } from 'mongoose';
+
 import './App.css';
 import React from 'react'; 
 import { useState,useEffect } from 'react';
@@ -25,9 +25,9 @@ export default function Signin(){
         set_password(e.target.value)
     }
  
-    function setEmail(e){
-        set_email(e.target.value)
-    }
+    // function setEmail(e){
+    //     set_email(e.target.value)
+    // }
  
  
     function validate(){
@@ -35,7 +35,7 @@ export default function Signin(){
      console.log(username,password)
      let valid_state=true
      try{
-       if(username!=null && username!=undefined && username.length>=7){ 
+       if(username!=null && username!==undefined && username.length>=7){ 
          const usernameRegex = /^[a-zA-Z0-9_]+$/;
           valid_state=usernameRegex.test(username);    
        }
@@ -90,7 +90,7 @@ export default function Signin(){
        
      try{
            if(validate()){
-                let m= await axios.post(`https://code-collab-backend-wvci.onrender.com/signup?username=${username}&password=${password}`).then((res)=>{
+                 await axios.post(`https://code-collab-backend-wvci.onrender.com/signup?username=${username}&password=${password}`).then((res)=>{
                   console.log("hii",res.data)
                   if(res.data){
                     navigate('/login')
@@ -98,7 +98,7 @@ export default function Signin(){
                   else{
                     setWrong(true)
                   }
-                }).catch((err)=>{console.log(err)})
+                }).catch((err)=>{console.log(email,processing)})
            }
            else{
              setFlag(false)
