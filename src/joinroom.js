@@ -1,12 +1,12 @@
 import './App.css';
-import React, { useEffect,useState } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-export default function Join_room(){
+export default function Joinroom(){
      const [roomname,setroomname]=useState('')
      const [passCode,setpassCode]=useState('') 
-     const [flag,setflag]=useState(false)
+    
      const navigate=useNavigate()
 
       async function handleClick(){

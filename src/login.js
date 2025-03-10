@@ -1,13 +1,13 @@
 import './App.css';
 import React from 'react'; 
-import { useState,useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 export default function Login(){
 
     const [username,set_username]=useState('')
-    const [email,set_email]=useState('')
+    
     const [password,set_password]=useState('')
     const [processing,setProcessing]=useState(false)
     const [msg,setmessage]= useState('') 

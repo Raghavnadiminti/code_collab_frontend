@@ -3,10 +3,10 @@ import React, { useEffect,useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-export default function Create_room(){
+export default function Createroom(){
      const [roomname,setroomname]=useState('')
      const [passCode,setpassCode]=useState('') 
-     const [flag,setflag]=useState(false)
+    
      const [lang,setLang]=useState("java")
      const [username,setUsername]=useState('Raghavendra') 
      const navigate=useNavigate()
