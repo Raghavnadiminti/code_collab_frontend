@@ -14,6 +14,7 @@ export default function Signin(){
     const [msg,setmessage]=useState('')
     const [flag,setFlag]=useState(true)
     const navigate=useNavigate() 
+    const [wrong,setWrong]=useState(false)
  
     function setusername(e){
     
@@ -89,12 +90,15 @@ export default function Signin(){
        
      try{
            if(validate()){
-                let m= await axios.post(`http://localhost:5000/signup?username=${username}&password=${password}`).then((res)=>{
+                let m= await axios.post(`https://code-collab-backend-wvci.onrender.com/signup?username=${username}&password=${password}`).then((res)=>{
                   console.log("hii",res.data)
                   if(res.data){
                     navigate('/login')
                   }
-                })
+                  else{
+                    setWrong(true)
+                  }
+                }).catch((err)=>{console.log(err)})
            }
            else{
              setFlag(false)
@@ -113,20 +117,28 @@ export default function Signin(){
        
      return(
              <>
-             <div className="input_container">
-
-                        <p className="text">Username</p> 
-                        <input type="text" placeholder='username' onChange={setusername}></input> 
-                        <p className="text">Email</p> 
-                        <input type="email" placeholder="eg:fafafd@gmail.com" onChange={set_email}></input> 
-                        <p className="text">password</p> 
-                        <input type="password" placeholder="password" onChange={set_Password}></input>
-                      
-                        <button className="signin" onClick={form_validation}></button>
-                        <p>already have account?<button onClick={()=>{navigate('/login')}}>Login</button></p>
+             <div className="container">
+                        <div className="croom">
+                                                <h1>Code_Collab</h1>
+                          
+                                                <p className="text">Username :</p> 
+                                                <input type="text" placeholder='username' onChange={setusername}></input> 
+                                                <p className="text">Email :</p> 
+                                                <input type="email" placeholder="eg:fafafd@gmail.com" onChange={set_email}></input> 
+                                                <p className="text">Password :</p> 
+                                                <input type="password" placeholder="password" onChange={set_Password}></input>
+                                              <br />
+                                              {wrong&&<p>usernameTaken</p>} 
+                                              {!flag&&<p>{msg}</p>}
+                                                <button className="signin" onClick={form_validation}>Sign Up</button>
+                                                <p className='Signuplogin'>already have account?<button  className='logsignup' onClick={()=>{navigate('/login')}}>Login</button></p>
+                                                <br />
+                        </div>
+                        <div className="welcome">
+                          <h1>Join the Code Revolution - Sign Up and Collaborate Instantly!</h1>
+                        </div>
 
              </div>
-             
              
              
              </>

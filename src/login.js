@@ -13,6 +13,7 @@ export default function Login(){
     const [msg,setmessage]= useState('') 
     const [flag,setFlag]=useState('') 
     const navigate=useNavigate() 
+    const [wrong,setwrong]=useState(false)
    
 
     function setusername(e){
@@ -86,13 +87,16 @@ export default function Login(){
        
      try{
            if(validate()){
-            let m= await axios.post(`http://localhost:5000/login?username=${username}&password=${password}`).then((res)=>{
+            let m= await axios.post(`https://code-collab-backend-wvci.onrender.com/login?username=${username}&password=${password}`).then((res)=>{
               console.log(res.data)
               if(res.data){
               sessionStorage.setItem('username',username)
               navigate('/home')
               }
-            })
+              else{
+                setwrong(true)
+              }
+            }).catch((err)=>{console.log(err)})
            }
            else{
              setFlag(false)
@@ -107,17 +111,26 @@ export default function Login(){
        
      return(
              <>
-             <div className="input_container">
-
-                        <p className="text">Username</p> 
-                        <input type="text" placeholder='username' onChange={(e)=>{set_username(e.target.value)
-                          console.log(e.target.value)
-                        }}></input> 
-                        <p className="text">password</p> 
-                        <input type="password" placeholder="password" onChange={set_Password}></input>
-                        <p></p>
-                        <button className="signin" onClick={form_validation}></button>
-                        <p>donthave account?<button onClick={()=>{navigate('/')}}>signin</button></p>
+            <div className="container">
+                        <div className="welcome">
+                          <h1>Unlock the Power of Collaboration - Log in to Code Together!</h1>
+                        </div>
+                        
+                        <div className="croom">
+                          
+                        <h1>Code_Collab</h1>
+                        <p className="text">Username :</p> 
+                            <input type="text" placeholder='username' onChange={(e)=>{set_username(e.target.value)
+                              console.log(e.target.value)
+                            }}></input> <br />
+                            <p className="text">Password :</p> 
+                            <input type="password" placeholder="password" onChange={set_Password}></input><br />
+                            <p></p>
+                            <button className="signin" onClick={form_validation}>Login</button>
+                            {wrong&&<p>wrong credentials</p>}
+                            {!flag&&<p>{msg}</p>}
+                            <p>don't have account?<button className='logsignup' onClick={()=>{navigate('/')}}>Sign Up</button></p>
+                        </div>
                        
 
              </div>
