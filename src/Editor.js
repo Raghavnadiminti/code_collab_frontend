@@ -1,17 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useRef } from 'react';
 import MonacoEditor from '@monaco-editor/react';
 import { io } from 'socket.io-client';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 
-const socket = io("https://code-collab-backend-wvci.onrender.com");
+// const socket = io("https://code-collab-backend-wvci.onrender.com");
+const socket = io("http://localhost:5000"); 
 
 function Editor({ language, theme, onCodeChange, code }) {
   const [editorCode, setEditorCode] = useState(code);
   const [lang, setLang] = useState(language);
   const [searched] = useSearchParams();
   const navigate = useNavigate();
+  const changetime=useRef(null)
+  const [locked,setlocked]=useState(false)
+  const programmaticChange = useRef(false);
 
   useEffect(() => {
     const prev_code = sessionStorage.getItem('code');
@@ -19,13 +23,28 @@ function Editor({ language, theme, onCodeChange, code }) {
       setEditorCode(prev_code);
       onCodeChange(prev_code);
     }
-
+    
+    
     socket.emit('join_room', { username: 'raghav', roomname: searched.get("roomname") });
 
-    socket.on('code', ({ code, lang }) => {
+    socket.on('lock',({username})=>{
+      if(sessionStorage.getItem('username')!==username){
+        console.log("lock",username)
+        setlocked(true)
+      }
+    }) 
+
+    socket.on('unlock',({username})=>{
+      console.log("unlock_",username)
+         setlocked(false)
+    })
+
+    socket.on('code', ({ code, lang,user }) => {
+      programmaticChange.current=true
       setEditorCode(code);
       setLang(lang);
       onCodeChange(code);
+      
     });
 
     socket.on('close', ({ res }) => {
@@ -46,10 +65,28 @@ function Editor({ language, theme, onCodeChange, code }) {
   }, [language]);
 
   function code_change(e) {
+    if(programmaticChange.current){
+      programmaticChange.current=false;
+      return;
+    }
     setEditorCode(e);
     sessionStorage.setItem('code', e);
     onCodeChange(e);
-    socket.emit('change', { roomname: searched.get("roomname"), code: e, lang: lang });
+    let username=sessionStorage.getItem("username") 
+    console.log(username)
+    socket.emit('change', { roomname: searched.get("roomname"), code: e, lang: lang,user:username });
+    
+    if(changetime.current){
+      clearTimeout(changetime.current)
+    }
+
+    changetime.current=setTimeout(()=>{
+            socket.emit('unlock_',{roomname:searched.get("roomname"),username:sessionStorage.getItem("username")})
+    },20000)
+
+
+
+
   }
 
   return (
@@ -59,6 +96,9 @@ function Editor({ language, theme, onCodeChange, code }) {
       language={lang}
       theme={theme}
       onChange={code_change}
+      options={{
+        readOnly:locked
+      }}
       value={editorCode}
     />
   );
